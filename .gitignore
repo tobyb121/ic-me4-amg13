@@ -20,3 +20,5 @@
 #Project files
 .project
 .cproject
+Debug/*
+Release/*
