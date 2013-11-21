@@ -1,60 +1,35 @@
-function [ Ih_2h ] = get_restriction2D( grid_rows, grid_cols )
+function [ Ih_2h , I2h_h ] = get_restriction2D( grid_rows, grid_cols )
 
 Nh=grid_rows*grid_cols;
 
-rows2h=(grid_rows-1)/2+1;
-cols2h=(grid_cols-1)/2+1;
+rows2h=(grid_rows-1)/2;
+cols2h=(grid_cols-1)/2;
 
 N2h=rows2h*cols2h;
 
 
-k=1;
-bi=ones(N2h*9,1);
-bj=ones(N2h*9,1);
-bs=zeros(N2h*9,1);
+n=0;
+i=ones(9*N2h,1);
+jx=ones(9*N2h,1);
+jy=ones(9*N2h,1);
+s=zeros(9*N2h,1);
 
-% for i=1:2:grid_rows
-%     for j=1:2:grid_cols
-%         i2h=(i-1)/2+1;
-%         j2h=(j-1)/2+1;
-%         v=(i-1)*grid_cols+j;
-%         v2h=(i2h-1)*cols2h+j2h;
-%         bi(k:k+8)=v2h;
-%         bj(k:k+8)=[[v-1, v, v+1]-grid_cols,...
-%                     v-1, v, v+1,...
-%                    [v-1, v, v+1]+grid_cols];
-%         bs(k:k+8)=[ 1,2,1,...
-%                     2,4,2,...
-%                     1,2,1];
-%         k=k+9;
-%     end
-% end
-
-for i=2:2:grid_rows+1
-    for j=2:2:grid_cols+1
-        i2h=i/2;
-        j2h=j/2;
-        v=(i-1)*(grid_cols+2)+j;
-        v2h=(i2h-1)*cols2h+j2h;
-        bi(k:k+8)=v2h;
-        bj(k:k+8)=[[v-1, v, v+1]-grid_cols-2,...
-                    v-1, v, v+1,...
-                   [v-1, v, v+1]+grid_cols+2];
-        bs(k:k+8)=[ 1,2,1,...
-                    2,4,2,...
-                    1,2,1];
-        k=k+9;
+for y=2:2:grid_rows
+    for x=2:2:grid_cols
+        i(n*9+1:(n+1)*9)=n+1;
+        jx(n*9+1:(n+1)*9)=[ x-1, x ,x+1,...
+                            x-1, x ,x+1,...
+                            x-1, x ,x+1];
+        jy(n*9+1:(n+1)*9)=[ y-1,y-1,y-1,...
+                             y , y , y ,...
+                            y+1,y+1,y+1];
+        s(n*9+1:(n+1)*9)=[1,2,1,2,4,2,1,2,1];
+        n=n+1;
     end
 end
+j=(grid_cols*(jy-1))+jx;
 
-%I=(bi<=0)|(bi>N2h)|(bj<=0)|(bj>Nh);
-%bi(I)=[];
-%bj(I)=[];
-%bs(I)=[];
-
-Ih_2h=sparse(bi,bj,bs);
-
-
-
+Ih_2h=sparse(i,j,s/16,N2h,Nh);
+I2h_h=sparse(j,i,s/4,Nh,N2h);
 end
 
