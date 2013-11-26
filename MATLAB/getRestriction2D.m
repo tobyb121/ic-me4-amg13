@@ -1,4 +1,4 @@
-function [ Ih_2h , I2h_h ] = get_restriction2D( grid_rows, grid_cols )
+function [ Ih_2h , I2h_h ] = getRestriction2D( grid_rows, grid_cols )
 
 Nh=grid_rows*grid_cols;
 

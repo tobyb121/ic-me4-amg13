@@ -6,8 +6,8 @@ clf;
 subplot(2,3,1);
 surf(Z);
 
-[ Ih_2h , I2h_h ]=get_restriction2D(n,n);
-[ I2h_4h , I4h_2h ]=get_restriction2D((n-1)/2,(n-1)/2);
+[ Ih_2h , I2h_h ]=getRestriction2D(n,n);
+[ I2h_4h , I4h_2h ]=getRestriction2D((n-1)/2,(n-1)/2);
 
 v2h=Ih_2h*v;
 
