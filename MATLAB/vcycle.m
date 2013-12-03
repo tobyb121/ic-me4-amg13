@@ -1,11 +1,46 @@
-function [ xh ] = vcycle( Ah,xh,bh,rows,cols ,levels)
+function [ xh ] = vcycle(varargin )
+%VCYCLE Perform Geometric Multigrid V-Cycle
+% xh = VCYCLE(Ah,bh,xh,rows,cols,levels) Solve Ah*xh=bh over 'levels'
+% VCYCLE('smoother',func) Set smoother function to use for relaxation steps
+% VCYCLE(params...)
+% 	'v1',n Set number of pre-restriction smoother steps
+% 	'v2',n Set number of smoothing operations on coarsest grid
+% 	'v3',n Set number of smoothing steps for post interpolation
+persistent smoother v1 v2 v3;
 
-v1=3;
-v2=3;
-v3=3;
+if(ischar(varargin{1}))
+    for i=1:2:nargin
+        switch varargin{i}
+            case 'v1'
+                v1=varargin{i+1};
+            case 'v2'
+                v2=varargin{i+1};
+            case 'v3'
+                v3=varargin{i+1};
+            case 'smoother'
+                smoother=varargin{i+1};
+        end
+    end
+    return;
+else
+    narginchk(6, 6);
+    Ah=varargin{1};
+    bh=varargin{2};
+    xh=varargin{3};
+    rows=varargin{4};
+    cols=varargin{5};
+    levels=varargin{6};
+end
+
+if isempty(v1)
+    v1=10; %pre-restriction
+    v2=50; %smooth on coarsest
+    v3=10; %post-interpolation
+    smoother=@Jacobi;
+end
 
 %Relax Ax=b v1 times on grid(h)
-xh=Jacobi(Ah,bh,xh,2/3,v1);
+xh=smoother(Ah,bh,xh,v1);
 
 %Generate restriction operators for grid(h)<=>grid(2h)
 [ Ih_2h , I2h_h ]=getRestriction2D(rows,cols);
@@ -19,12 +54,14 @@ r2h=Ih_2h*rh;
 A2h=Ih_2h*Ah*I2h_h;
 e2h=zeros(size(r2h));
 
-%Relax Ae=r v2 times on grid(2h)
-e2h=Jacobi(A2h,r2h,e2h,2/3,v2);
-if(levels>0)
+%if not on coarsest grid
+if(levels>1)
+    %recursive call, to deeper grid
     e2h=vcycle(A2h,e2h,r2h,rows2h,cols2h,levels-1);
-%Relax Ae=r v2 times on grid(2h)
-e2h=Jacobi(A2h,r2h,e2h,2/3,v2);
+else
+    %Relax Ae=r v2 times on grid(2h)
+    e2h=smoother(A2h,r2h,e2h,v2);
+end
 
 %Interpolate approximation for e back to grid(h)
 eh=I2h_h*e2h;
@@ -33,9 +70,7 @@ eh=I2h_h*e2h;
 xh=xh+eh;
 
 %Relax Ax=b v3 times on grid(h)
-xh=Jacobi(Ah,bh,xh,2/3,v3);
-end
-
+xh=smoother(Ah,bh,xh,v3);
 
 end
 

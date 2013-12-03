@@ -1,8 +1,8 @@
 function [ xh ] = twoGridCorrection( Ah,xh,bh,rows,cols )
 
-v1=3;
-v2=10;
-v3=3;
+v1=6;
+v2=6;
+v3=6;
 
 %Relax Ax=b v1 times on grid(h)
 xh=Jacobi(Ah,bh,xh,2/3,v1);
