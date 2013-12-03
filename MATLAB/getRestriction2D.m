@@ -2,8 +2,17 @@ function [ Ih_2h , I2h_h ] = getRestriction2D( grid_rows, grid_cols )
 
 Nh=grid_rows*grid_cols;
 
-rows2h=(grid_rows-1)/2;
-cols2h=(grid_cols-1)/2;
+if mod(grid_rows,2) == 0
+    rows2h=grid_rows/2;
+else
+    rows2h=(grid_rows-1)/2;
+end 
+   
+if mod(grid_cols,2) == 0
+    cols2h=grid_cols/2;
+else
+    cols2h=(grid_cols-1)/2;
+end
 
 N2h=rows2h*cols2h;
 
@@ -27,6 +36,13 @@ for y=2:2:grid_rows
         n=n+1;
     end
 end
+
+outside=jx>grid_cols|jy>grid_rows;
+i(outside)=[];
+jx(outside)=[];
+jy(outside)=[];
+s(outside)=[];
+
 j=(grid_cols*(jy-1))+jx;
 
 Ih_2h=sparse(i,j,s/16,N2h,Nh);
