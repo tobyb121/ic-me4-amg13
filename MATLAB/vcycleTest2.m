@@ -10,7 +10,7 @@ load('..\Matrices\GeometricTest_1_20131203\matrices.mat');
 x=zeros(N,1);
 %%
 v1=10;
-v2=100;
+v2=10;
 v3=40;
 n=4;
 vcycles=100;
