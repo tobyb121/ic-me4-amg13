@@ -32,8 +32,6 @@ else
     levels=varargin{6};
 end
 
-disp(rows);
-
 if isempty(v1)
     v1=10; %pre-restriction
     v2=50; %smooth on coarsest
@@ -68,7 +66,7 @@ e2h=zeros(size(r2h));
 %if not on coarsest grid
 if(levels>1)
     %recursive call, to deeper grid
-    e2h=vcycle(A2h,e2h,r2h,rows2h,cols2h,levels-1);
+    e2h=vcycle(A2h,r2h,e2h,rows2h,cols2h,levels-1);
 else
     %Relax Ae=r v2 times on grid(2h)
     e2h=smoother(A2h,r2h,e2h,v2);

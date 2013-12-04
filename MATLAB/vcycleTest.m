@@ -1,9 +1,10 @@
 clear;
+close all;
 
-k=1000;
+k=100;
 
-grid_rows=200;
-grid_cols=200;
+grid_rows=63;
+grid_cols=63;
 
 N=grid_rows*grid_cols;
 

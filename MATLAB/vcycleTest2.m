@@ -1,7 +1,5 @@
 clear;
 
-k=10000;
-
 grid_rows=20;
 grid_cols=20;
 
@@ -11,28 +9,63 @@ load('..\Matrices\GeometricTest_1_20131203\matrices.mat');
 
 x=zeros(N,1);
 %%
-xj=Jacobi(A,b,x,k);
-xgs=GaussSeidel(A,b,x,k);
-vcycle('v1',10,'v2',10,'v3',20,'smoother',@Jacobi)
-xv=vcycle(A,b,x,grid_rows,grid_cols,3);
-vcycle('v1',10,'v2',10,'v3',20,'smoother',@GaussSeidel)
-xv2=vcycle(A,b,x,grid_rows,grid_cols,3);
+v1=10;
+v2=100;
+v3=40;
+n=4;
+vcycles=100;
+
+WU=(v1+v3)*(4*(1-4^-n)/3)+v2*4^-n;
+k=round(vcycles*WU);
+
+disp(['Work Units: ',num2str(vcycles),'*',num2str(WU),'=',num2str(vcycles*WU)]);
+%%
+
+[xj,Rj]=Jacobi(A,b,x,k);
+
+[xgs,Rgs]=GaussSeidel(A,b,x,k);
+
+vcycle('v1',v1,'v2',v2,'v3',v3,'smoother',@Jacobi)
+xvj=x;
+Rvj=zeros(vcycles,1);
+for i=1:vcycles
+    xvj=vcycle(A,b,xvj,grid_rows,grid_cols,n);
+    Rvj(i)=norm(A*xvj-b);
+end
+
+vcycle('v1',v1,'v2',v2,'v3',v3,'smoother',@GaussSeidel)
+xvgs=x;
+Rvgs=zeros(vcycles,1);
+for i=1:vcycles
+    xvgs=vcycle(A,b,xvgs,grid_rows,grid_cols,n);
+    Rvgs(i)=norm(A*xvgs-b);
+end
 
 rj=A*xj-b;
 rgs=A*xgs-b;
-rv=A*xv-b;
-rv2=A*xv2-b;
+rv=A*xvj-b;
+rv2=A*xvgs-b;
 
 Xj=reshape(xj,grid_rows,grid_cols);
-X2=reshape(xgs,grid_rows,grid_cols);
-Xv=reshape(xv,grid_rows,grid_cols);
-Xv2=reshape(xv2,grid_rows,grid_cols);
+Xgs=reshape(xgs,grid_rows,grid_cols);
+Xvj=reshape(xvj,grid_rows,grid_cols);
+Xvgs=reshape(xvgs,grid_rows,grid_cols);
 
-subplot(2,4,1);surf(Xj);axis tight
+subplot(2,2,1);surf(Xj);axis tight
 title(['Jacobi (',num2str(k),' iterations) ||r||=',num2str(norm(rj))]);
-subplot(2,4,2);surf(X2);axis tight
+subplot(2,2,2);surf(Xvj);axis tight
+title(['Multigrid V-Cycle (',num2str(n),' Grids, Jacobi) ||r||=',num2str(norm(rv))]);
+subplot(2,2,3);surf(Xgs);axis tight
 title(['Gauss Seidel (',num2str(k),' iterations) ||r||=',num2str(norm(rgs))]);
-subplot(2,4,3);surf(Xv);axis tight
-title(['Multigrid V-Cycle (5 Grid) ||r||=',num2str(norm(rv))]);
-subplot(2,4,4);surf(Xv2);axis tight
-title(['Multigrid V-Cycle (5 Grid) ||r||=',num2str(norm(rv2))]);
+subplot(2,2,4);surf(Xvgs);axis tight
+title(['Multigrid V-Cycle (',num2str(n),' Grids, Gauss Seidel) ||r||=',num2str(norm(rv2))]);
+
+figure;
+subplot(2,2,1);semilogy(Rj);axis tight
+title(['Jacobi (',num2str(k),' iterations) ||r||=',num2str(norm(rj))]);
+subplot(2,2,2);semilogy(Rvj);axis tight
+title(['Multigrid V-Cycle (',num2str(n),' Grids, Jacobi) ||r||=',num2str(norm(rv))]);
+subplot(2,2,3);semilogy(Rgs);axis tight
+title(['Gauss Seidel (',num2str(k),' iterations) ||r||=',num2str(norm(rgs))]);
+subplot(2,2,4);semilogy(Rvgs);axis tight
+title(['Multigrid V-Cycle (',num2str(n),' Grids, Gauss Seidel) ||r||=',num2str(norm(rv2))]);
