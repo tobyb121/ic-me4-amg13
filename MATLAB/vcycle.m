@@ -32,6 +32,8 @@ else
     levels=varargin{6};
 end
 
+disp(rows);
+
 if isempty(v1)
     v1=10; %pre-restriction
     v2=50; %smooth on coarsest
@@ -44,8 +46,17 @@ xh=smoother(Ah,bh,xh,v1);
 
 %Generate restriction operators for grid(h)<=>grid(2h)
 [ Ih_2h , I2h_h ]=getRestriction2D(rows,cols);
-rows2h=(rows-1)/2;
-cols2h=(cols-1)/2;
+if mod(rows,2) == 0
+    rows2h=rows/2;
+else
+    rows2h=(rows-1)/2;
+end 
+   
+if mod(cols,2) == 0
+    cols2h=cols/2;
+else
+    cols2h=(cols-1)/2;
+end
 %Calculate residual
 rh=bh-Ah*xh;
 

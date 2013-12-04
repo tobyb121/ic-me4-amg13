@@ -1,9 +1,9 @@
 clear;
 
-k=100;
+k=1000;
 
-grid_rows=63;
-grid_cols=63;
+grid_rows=200;
+grid_cols=200;
 
 N=grid_rows*grid_cols;
 
@@ -19,7 +19,7 @@ X=peaks(grid_rows);
 u=reshape(X,N,1);
 b=A*u;
 x=zeros(N,1);
-
+%%
 xj=Jacobi(A,b,x,k);
 x2=GaussSeidel(A,b,x,k);
 vcycle('v1',10,'v2',50,'v3',10,'smoother',@Jacobi)
