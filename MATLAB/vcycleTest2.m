@@ -1,4 +1,5 @@
-clear;
+close all;
+clear all;
 
 grid_rows=20;
 grid_cols=20;
@@ -6,6 +7,9 @@ grid_cols=20;
 N=grid_rows*grid_cols;
 
 load('..\Matrices\GeometricTest_1_20131203\matrices.mat');
+
+A=A3;
+b=b3;
 
 x=zeros(N,1);
 %%
