@@ -1,5 +1,5 @@
 for i=1:N
-   disp(reshape(A(i,:),grid_cols,grid_rows));
+   disp(reshape(A(i,:),sqrt(N),sqrt(N)));
    pause;
    
 end

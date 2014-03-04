@@ -20,8 +20,14 @@ X=peaks(grid_rows);
 u=reshape(X,N,1);
 b=A*u;
 x=zeros(N,1);
+
+xk0=x;
+rk0=norm(A*xk0-b);
 %%
 vcycleDbg('v1',3,'v2',10,'v3',3,'smoother',@GaussSeidel)
-xv=vcycleDbg(A,b,x,grid_rows,grid_cols,3,x,b);
+xv=vcycleDbg(A,b,x,grid_rows,grid_cols,4,x,b);
+
+xkn=xv;
+rkn=norm(A*xkn-b);
 
 plot_vcycle;

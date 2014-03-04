@@ -8,8 +8,8 @@ N=grid_rows*grid_cols;
 
 load('..\Matrices\GeometricTest_1_20131203\matrices.mat');
 
-A=A3;
-b=b3;
+A=A6;
+b=b6;
 
 x=zeros(N,1);
 %%
