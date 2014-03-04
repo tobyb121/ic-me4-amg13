@@ -31,13 +31,12 @@ if(two_pass)
     F(C(C~=0))=[];
     
     AsFF=As(F,F);
-    [rFF,cFF,vFF]=find(AsFF);
+    [rFF,cFF,~]=find(AsFF);
     D=rFF==cFF;
     rFF(D)=[];
     cFF(D)=[];
-    vFF(D)=[];
     
-    for (i=1:length(rFF))
+    for i=1:length(rFF)
         s=0;
         for c=C(C~=0)'
             if(As(F(rFF(i)),c)~=0&&As(F(cFF(i)),c)~=0)
