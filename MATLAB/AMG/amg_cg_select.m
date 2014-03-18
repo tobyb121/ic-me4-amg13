@@ -1,4 +1,28 @@
 function [C,As]=amg_cg_select(A)
+
+global C_cache;
+persistent size_cache;
+
+if(ischar(A))
+    if(strcmp(A,'reset'))
+        C_cache={};
+        size_cache=[];
+    end
+    return
+end
+
+if ~isempty(C_cache) 
+    for i=1:length(size_cache)
+       if(size_cache(i)==size(A,1))
+          C=C_cache{i};
+          return; 
+       end
+    end
+else
+    C_cache={};
+    size_cache=[];
+end
+
 N=size(A,1);
 
 two_pass=1;
@@ -53,5 +77,8 @@ end
 
 %% De-allocate 0's from C
 C(C==0)=[];
+C=sort(C);
 
+C_cache{length(C_cache)+1}=C;
+size_cache(length(size_cache)+1)=size(A,1);
 end

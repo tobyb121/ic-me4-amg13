@@ -1,21 +1,49 @@
-function [Ih_hc]=amg_interpolation_matrix(Ah,C)
+function [Ihc_h]=amg_interpolation_matrix(Ah,C)
 
-persistent Ih_hc_cache size_cache;
+global Ihc_h_cache; 
+persistent size_cache;
 
-if ~isempty(Ih_hc_cache) 
-    for i=length(size_cache)
-       if(s(i)==size(Ah,1))
-          Ih_hc=Ih_hc_cache(i);
+if(ischar(Ah))
+    if(strcmp(Ah,'reset'))
+        Ihc_h_cache={};
+        size_cache=[];
+    end
+    return
+end
+
+N=size(Ah,1);
+
+if ~isempty(Ihc_h_cache) 
+    for i=1:length(size_cache)
+       if(size_cache(i)==N)
+           Ihc_h=Ihc_h_cache{i};
           return; 
        end
     end
 else
-    Ih_hc={};
+    Ihc_h_cache={};
+    size_cache=[];
 end
 
+Ihc_h=zeros(N,length(C));
 
+F=1:N;
+F(C)=[];
 
-Ih_hc_cache{length(Ih_hc_cache)+1}=Ih_hc;
+for c=1:length(C)
+    Ihc_h(C(c),c)=1;
+end
+
+for f=1:length(F)
+    rowsum=sum(Ah(F(f),C));
+    for c=1:length(C)
+        Ihc_h(F(f),c)=Ah(F(f),C(c))/rowsum;
+    end
+end
+
+Ihc_h=sparse(Ihc_h);
+
+Ihc_h_cache{length(Ihc_h_cache)+1}=Ihc_h;
 size_cache(length(size_cache)+1)=size(Ah,1);
 
 end
