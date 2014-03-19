@@ -27,4 +27,5 @@ Release/*
 *.eps
 *.png
 *.ai
+*.asv
 Thumbs.db
