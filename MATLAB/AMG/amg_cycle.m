@@ -48,6 +48,12 @@ C=amg_cg_select(Ah);
 
 Ih_hc=Ihc_h';
 
+Ih_hcs=sum(Ih_hc,2);
+
+for n=1:length(Ih_hcs)
+   Ih_hc(n,:)=Ih_hc(n,:)*1/Ih_hcs(n);
+end
+
 %Calculate residual
 rh=bh-Ah*xh;
 
