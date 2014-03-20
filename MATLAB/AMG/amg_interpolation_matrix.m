@@ -41,7 +41,7 @@ for f=1:length(F)
     end
 end
 
-Ihc_h=sparse(Ihc_h);
+Ihc_h=sparse(abs(Ihc_h));
 
 Ihc_h_cache{length(Ihc_h_cache)+1}=Ihc_h;
 size_cache(length(size_cache)+1)=size(Ah,1);

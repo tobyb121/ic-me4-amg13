@@ -1,4 +1,4 @@
-function [ xh ] = amg_cycle(varargin)
+function [ xh, WU ] = amg_cycle(varargin)
 %AMG_AMG_CYCLE Perform Algebraic Multigrid Cycle
 % xh = AMG_CYCLE(Ah,bh,xh,mu,maxlevels) Solve Ah*xh=bh over 'maxlevels'
 % AMG_CYCLE('smoother',func) Set smoother function to use for relaxation steps
@@ -38,8 +38,12 @@ if isempty(v1)
     smoother=@Jacobi;
 end
 
+WU=0;
+
 %Relax Ax=b v1 times on grid(h)
 xh=smoother(Ah,bh,xh,v1);
+
+WU=WU+v1;
 
 C=amg_cg_select(Ah);
 
@@ -66,12 +70,15 @@ for m=1:mu
     %if not on coarsest grid
     if(maxlevels>1)
         %recursive call, to deeper grid
-        e2h=amg_cycle(A2h,r2h,e2h,mu,maxlevels-1);
+        [e2h,WUc]=amg_cycle(A2h,r2h,e2h,mu,maxlevels-1);
     else
         %Relax Ae=r v2 times on grid(2h)
         e2h=smoother(A2h,r2h,e2h,v2);
+        WUc=v2;
     end
 
+    WU=WU+WUc*length(e2h)/length(xh);
+    
     %Interpolate approximation for e back to grid(h)
     eh=Ihc_h*e2h;
 
@@ -80,6 +87,7 @@ for m=1:mu
 
     %Relax Ax=b v3 times on grid(h)
     xh=smoother(Ah,bh,xh,v3);
+    WU=WU+v3;
 end
 
 end

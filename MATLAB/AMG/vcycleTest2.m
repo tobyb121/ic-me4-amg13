@@ -1,9 +1,7 @@
-clear all;
+%clear all;
 close all;
 
-k=100;
-
-WU=11.6654;
+k=50;
 
 rows=64;
 N=rows^2;
@@ -72,21 +70,21 @@ u=zeros(N,1);
 b=A*u;
 x=rand(N,1);
 
-I=200;
-
 xk0=x;
 rk0=norm(A*xk0-b);
 %%
 amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
 xv=xk0;
 rv=[];
-for i=1:I
-    xv=amg_cycle(A,b,xv,1,5);
+WU=0;
+for i=1:k
+    [xv,WUv]=amg_cycle(A,b,xv,1,2);
+    WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
     disp(i);
 end
 
-[xj,rj]=Jacobi(A,b,x,round(I*WU));
+[xj,rj]=Jacobi(A,b,x,round(WU));
 
 xkn=xv;
 rkn=norm(A*xkn-b);
