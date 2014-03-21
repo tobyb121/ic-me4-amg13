@@ -34,7 +34,7 @@ rk0=norm(A*xk0-b);
 %%
 amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
 xv=xk0;
-rv=[];
+rv=[rk0];
 WU=0;
 disp('Starting AMG cycle');
 for i=1:k

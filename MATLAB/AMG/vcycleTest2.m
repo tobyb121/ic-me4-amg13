@@ -1,7 +1,7 @@
-%clear all;
+clear all;
 close all;
 
-k=50;
+k=200;
 
 rows=64;
 N=rows^2;
@@ -75,7 +75,7 @@ rk0=norm(A*xk0-b);
 %%
 amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
 xv=xk0;
-rv=[];
+rv=[rk0];
 WU=0;
 for i=1:k
     [xv,WUv]=amg_cycle(A,b,xv,1,2);

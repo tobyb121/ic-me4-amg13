@@ -38,6 +38,9 @@ if isempty(v1)
     smoother=@Jacobi;
 end
 
+global A2h_cache; 
+persistent size_cache;
+
 WU=0;
 
 %Relax Ax=b v1 times on grid(h)
@@ -58,13 +61,24 @@ for n=1:length(Ih_hcs)
    Ih_hc(n,:)=Ih_hc(n,:)*1/Ih_hcs(n);
 end
 
-%Calculate residual
-rh=bh-Ah*xh;
+if ~isempty(A2h_cache) 
+    for i=1:length(size_cache)
+       if(size_cache(i)==length(C))
+           A2h=A2h_cache{i}; 
+       end
+    end
+else
+    A2h_cache={};
+    size_cache=[];
+end
 
+A2h=Ih_hc*Ah*Ihc_h;
 for m=1:mu
+    %Calculate residual
+    rh=bh-Ah*xh;
+    
     %Restrict to grid(2h)
     r2h=Ih_hc*rh;
-    A2h=Ih_hc*Ah*Ihc_h;
     e2h=zeros(size(r2h));
 
     %if not on coarsest grid
