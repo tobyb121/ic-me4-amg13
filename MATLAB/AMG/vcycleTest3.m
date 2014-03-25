@@ -13,15 +13,16 @@ rk0=norm(A*xk0-b);
 
 k=50;
 %%
-amg_cycle('v1',2,'v2',10,'v3',2,'smoother',@Jacobi);
+amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
 xv=xk0;
 rv=[rk0];
 WU=0;
+fprintf('Iterating:  setup');
 for i=1:k
-    [xv,WUv]=amg_cycle(A,b,xv,1,6);
+    [xv,WUv]=amg_cycle(A,b,xv,1,7);
     WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
-    disp(i);
+    fprintf('\b\b\b\b\b\b% 5d\n',i);
 end
 
 xv2=xk0;

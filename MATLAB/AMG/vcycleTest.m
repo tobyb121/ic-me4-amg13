@@ -1,4 +1,13 @@
-%clear all;disp('Clearing');
+%% vcycleTest
+% Performs iterations of amg v-cycle on a 64x64 element grid using 2D
+% laplace operator:
+%       (0  -1  0)
+%       (-1  4 -1)
+%       (0  -1  0)
+% Compares result to iteration of Jacobi (for same number of WU) and plots
+% residuals for both cases
+
+clear all;disp('Clearing');
 close all;
 
 disp('Setup');
@@ -37,11 +46,12 @@ xv=xk0;
 rv=[rk0];
 WU=0;
 disp('Starting AMG cycle');
+fprintf('Iterating:  setup');
 for i=1:k
     [xv,WUv]=amg_cycle(A,b,xv,1,7);
     WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
-    disp(i);
+    fprintf('\b\b\b\b\b\b% 5d\n',i);
 end
 
 [xj,rj]=Jacobi(A,b,x,round(WU));
@@ -51,4 +61,5 @@ rkn=norm(A*xkn-b);
 rjn=norm(A*xj-b);
 
 semilogy(linspace(0,length(rj),length(rj)),rj,linspace(0,length(rj),length(rv)),rv);
+legend({'Jacobi','AMG cycle'});
 

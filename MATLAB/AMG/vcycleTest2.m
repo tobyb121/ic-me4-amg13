@@ -1,9 +1,28 @@
+%% vcycleTest2
+% Performs iterations of amg v-cycle on a 64x64 element grid on discretised
+% equation:
+% 
+% a*d2f/dx^2+b*d2f/dy^2+c*d2f/dxdy=0
+%        
+%           |
+%   a=1     |  a=1
+%   b=1000  |  b=1
+%   c=0     |  c=2
+% __________|_________
+%           |
+%   a=1     |  a=1000
+%   b=1     |  b=1
+%   c=0     |  c=0
+%           |
+% Compares result to iteration of Jacobi (for same number of WU) and plots
+% residuals for both cases
+
 clear all;
 close all;
 
 k=50;
 
-rows=64;
+rows=128;
 N=rows^2;
 
 n=@(i,j)i+(j-1)*rows;
@@ -77,11 +96,12 @@ amg_cycle('v1',10,'v2',0,'v3',10,'smoother',@Jacobi);
 xv=xk0;
 rv=[rk0];
 WU=0;
+fprintf('Iterating:  setup');
 for i=1:k
-    [xv,WUv]=amg_cycle(A,b,xv,1,3);
+    [xv,WUv]=amg_cycle(A,b,xv,1,6);
     WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
-    disp(i);
+    fprintf('\b\b\b\b\b\b% 5d\n',i);
 end
 
 [xj,rj]=Jacobi(A,b,x,round(WU));

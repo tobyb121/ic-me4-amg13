@@ -38,7 +38,7 @@ if isempty(v1)
     smoother=@Jacobi;
 end
 
-global A2h_cache; 
+global A2h_cache sparsity; 
 persistent size_cache;
 
 WU=0;
@@ -58,6 +58,15 @@ lenC=length(C);
 %Generate restriction operators for grid(h)<=>grid(hc)
 [ Ihc_h ]=amg_interpolation_matrix(Ah,C);
 
+% if cannot coarsen further
+if isempty(Ihc_h)
+    %Relax Ax=b v2 times
+    %xh=smoother(Ah,bh,xh,v2);
+    xh=Ah^-1*bh;
+    WU=WU+v2;
+    return;
+end
+
 Ih_hcs=full(sum(Ihc_h,1));
 
 [i,j,s]=find(Ihc_h);
@@ -75,12 +84,15 @@ if ~isempty(A2h_cache)
 else
     A2h_cache={};
     size_cache=[];
+    sparsity=[];
 end
 if (isempty(A2h))
     A2h=Ih_hc*Ah*Ihc_h;
     A2h_cache{length(A2h_cache)+1}=A2h;
     size_cache(length(size_cache)+1)=lenC;
 end
+
+sparsity(length(size_cache))=nnz(A2h)/size(A2h,1);
 
 for m=1:mu
     %Calculate residual
