@@ -1,4 +1,4 @@
-clear all;disp('Clearing');
+%clear all;disp('Clearing');
 close all;
 
 disp('Setup');
@@ -38,7 +38,7 @@ rv=[rk0];
 WU=0;
 disp('Starting AMG cycle');
 for i=1:k
-    [xv,WUv]=amg_cycle(A,b,xv,1,9);
+    [xv,WUv]=amg_cycle(A,b,xv,1,7);
     WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
     disp(i);

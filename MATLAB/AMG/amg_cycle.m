@@ -43,36 +43,45 @@ persistent size_cache;
 
 WU=0;
 
+N=size(Ah,1);
+
 %Relax Ax=b v1 times on grid(h)
 xh=smoother(Ah,bh,xh,v1);
 
 WU=WU+v1;
 
+
 C=amg_cg_select(Ah);
+
+lenC=length(C);
 
 %Generate restriction operators for grid(h)<=>grid(hc)
 [ Ihc_h ]=amg_interpolation_matrix(Ah,C);
 
-Ih_hc=Ihc_h';
+Ih_hcs=full(sum(Ihc_h,1));
 
-Ih_hcs=sum(Ih_hc,2);
+[i,j,s]=find(Ihc_h);
+s=s./Ih_hcs(j)';
 
-for n=1:length(Ih_hcs)
-   Ih_hc(n,:)=Ih_hc(n,:)*1/Ih_hcs(n);
-end
+Ih_hc=sparse(j,i,s,lenC,N,length(i));
 
-if ~isempty(A2h_cache) 
+A2h=[];
+if ~isempty(A2h_cache)
     for i=1:length(size_cache)
-       if(size_cache(i)==length(C))
-           A2h=A2h_cache{i}; 
+       if(size_cache(i)==lenC)
+           A2h=A2h_cache{i};
        end
     end
 else
     A2h_cache={};
     size_cache=[];
 end
+if (isempty(A2h))
+    A2h=Ih_hc*Ah*Ihc_h;
+    A2h_cache{length(A2h_cache)+1}=A2h;
+    size_cache(length(size_cache)+1)=lenC;
+end
 
-A2h=Ih_hc*Ah*Ihc_h;
 for m=1:mu
     %Calculate residual
     rh=bh-Ah*xh;

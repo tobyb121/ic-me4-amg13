@@ -1,7 +1,7 @@
 clear all;
 close all;
 
-k=200;
+k=50;
 
 rows=64;
 N=rows^2;
@@ -73,12 +73,12 @@ x=rand(N,1);
 xk0=x;
 rk0=norm(A*xk0-b);
 %%
-amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
+amg_cycle('v1',10,'v2',0,'v3',10,'smoother',@Jacobi);
 xv=xk0;
 rv=[rk0];
 WU=0;
 for i=1:k
-    [xv,WUv]=amg_cycle(A,b,xv,1,2);
+    [xv,WUv]=amg_cycle(A,b,xv,1,3);
     WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
     disp(i);
