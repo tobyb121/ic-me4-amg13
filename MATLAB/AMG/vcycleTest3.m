@@ -1,8 +1,8 @@
 clear all;
 
 load('..\\..\\Matrices\\GeometricTest_1_20131203\\matrices.mat');
-A=-A4;
-b=-b4;
+A=-A5;
+b=-b5;
 
 N=length(b);
 

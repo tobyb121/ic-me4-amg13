@@ -22,7 +22,7 @@ close all;
 
 k=50;
 
-rows=128;
+rows=64;
 N=rows^2;
 
 n=@(i,j)i+(j-1)*rows;
@@ -92,7 +92,7 @@ x=rand(N,1);
 xk0=x;
 rk0=norm(A*xk0-b);
 %%
-amg_cycle('v1',10,'v2',0,'v3',10,'smoother',@Jacobi);
+amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
 xv=xk0;
 rv=[rk0];
 WU=0;

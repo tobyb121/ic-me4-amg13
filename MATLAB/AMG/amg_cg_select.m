@@ -26,7 +26,7 @@ end
 N=size(A,1);
 
 two_pass=1;
-theta=0.8;
+theta=0.4;
 
 C=zeros(N,1);
 i_c=1;
