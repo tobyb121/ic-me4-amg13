@@ -61,8 +61,7 @@ lenC=length(C);
 % if cannot coarsen further
 if isempty(Ihc_h)
     %Relax Ax=b v2 times
-    %xh=smoother(Ah,bh,xh,v2);
-    xh=Ah^-1*bh;
+    xh=smoother(Ah,bh,xh,v2);
     WU=WU+v2;
     return;
 end
