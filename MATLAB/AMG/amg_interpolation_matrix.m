@@ -38,7 +38,7 @@ for f=1:length(F)
     rowsum=sum(Ah(F(f),C));
     Ihc_h(F(f),1:length(C))=Ah(F(f),C)/rowsum;
 end
-Ihc_h(Ihc_h<0.1)=0;
+
 Ihc_h=sparse(abs(Ihc_h));
 
 Ihc_h_cache{length(Ihc_h_cache)+1}=Ihc_h;

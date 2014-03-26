@@ -20,7 +20,7 @@ WU=0;
 disp('Jacobi V-cycle');
 fprintf('Iterating:  setup');
 for i=1:k
-    [xv,WUv]=amg_cycle(A,b,xv,1,7);
+    [xv,WUv]=amg_cycle(A,b,xv,1,6);
     WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
     fprintf('\b\b\b\b\b\b% 5d\n',i);
@@ -34,7 +34,7 @@ fprintf('Iterating:  setup');
 amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@GaussSeidel);
 i=1;
 while(WU2<WU)
-    [xv2,WUv]=amg_cycle(A,b,xv2,1,7);
+    [xv2,WUv]=amg_cycle(A,b,xv2,1,6);
     WU2=WUv+WU2;
     rv2=[rv2,norm(A*xv2-b)];
     fprintf('\b\b\b\b\b\b% 5d\n',i);
