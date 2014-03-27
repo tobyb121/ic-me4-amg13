@@ -11,12 +11,12 @@ if(ischar(A))
     return
 end
 
-if ~isempty(C_cache) 
+if ~isempty(C_cache)
     for i=1:length(size_cache)
-       if(size_cache(i)==size(A,1))
-          C=C_cache{i};
-          return; 
-       end
+        if(size_cache(i)==size(A,1))
+            C=C_cache{i};
+            return;
+        end
     end
 else
     C_cache={};
@@ -61,16 +61,19 @@ if(two_pass)
     cFF(D)=[];
     
     for i=1:length(rFF)
-        s=0;
-        for c=C(C~=0)'
-            if(As(F(rFF(i)),c)~=0&&As(F(cFF(i)),c)~=0)
-                s=1;
-                break;
+        if(rFF(i)~=0)
+            s=0;
+            for c=C(C~=0)'
+                if(As(F(rFF(i)),c)~=0&&As(F(cFF(i)),c)~=0)
+                    s=1;
+                    break;
+                end
             end
-        end
-        if(s==0)
-            C(i_c)=F(rFF(i));
-            i_c=i_c+1;
+            if(s==0)
+                C(i_c)=F(rFF(i));
+                rFF(rFF==rFF(i))=0;
+                i_c=i_c+1;
+            end
         end
     end
 end
