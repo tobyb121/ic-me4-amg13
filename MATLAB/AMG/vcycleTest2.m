@@ -53,7 +53,7 @@ for i=ceil(1:rows/2)
 end
 for i=ceil(rows/2+1:rows)
  for j=ceil(1:rows/2)
-     a(n(i,j))=-1000;
+     a(n(i,j))=-20;
      b(n(i,j))=-1;
      c(n(i,j))=0;
  end
@@ -61,7 +61,7 @@ end
 for i=ceil(1:rows/2)
  for j=ceil(rows/2+1:rows)
      a(n(i,j))=-1;
-     b(n(i,j))=-1000;
+     b(n(i,j))=-20;
      c(n(i,j))=0;
  end
 end
@@ -69,7 +69,7 @@ for i=ceil(rows/2+1:rows)
  for j=ceil(rows/2+1:rows)
      a(n(i,j))=-1;
      b(n(i,j))=-1;
-     c(n(i,j))=-2;
+     c(n(i,j))=0;
  end
 end
 
