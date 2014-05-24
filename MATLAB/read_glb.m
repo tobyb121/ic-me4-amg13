@@ -39,6 +39,10 @@ u=1;
 for n=1:N
 l=fgetl(fID);
 v=sscanf(l,'%d',bandwidth+2);
+while(length(v)-2<v(2))
+    l2=fgetl(fID);
+    v=[v;sscanf(l2,'%f',bandwidth+2)];
+end
 i(u:u+v(2)-1)=v(1);
 j(u:u+v(2)-1)=v(3:end);
 u=u+v(2);
@@ -52,6 +56,10 @@ u=1;
 for n=1:N
 l=fgetl(fID);
 v=sscanf(l,'%f',bandwidth+2);
+while(length(v)-2<v(2))
+    l2=fgetl(fID);
+    v=[v;sscanf(l2,'%f',bandwidth+2)];
+end
 s(u:u+v(2)-1)=v(3:end);
 u=u+v(2);
 end
@@ -73,4 +81,4 @@ b(n)=v(2);
 end
 
 fclose(fID);
-clear f p fID u v l v n bandwidth start_line i j s;
+clear f p fID u v l l2 v n bandwidth start_line i j s m maps;

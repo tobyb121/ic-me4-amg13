@@ -8,6 +8,9 @@ function [ xh, WU ] = amg_cycle(varargin)
 % 	'v3',n Set number of smoothing steps for post interpolation
 persistent smoother v1 v2 v3;
 
+global A2h_cache sparsity; 
+persistent size_cache;
+
 if(ischar(varargin{1}))
     for i=1:2:nargin
         switch varargin{i}
@@ -19,6 +22,12 @@ if(ischar(varargin{1}))
                 v3=varargin{i+1};
             case 'smoother'
                 smoother=varargin{i+1};
+            case 'reset'
+                amg_cg_select('reset');
+                amg_interpolation_matrix('reset');
+                A2h_cache={};
+                size_cache=[];
+                sparsity=[];      
         end
     end
     return;
@@ -37,9 +46,6 @@ if isempty(v1)
     v3=3; %post-interpolation
     smoother=@Jacobi;
 end
-
-global A2h_cache sparsity; 
-persistent size_cache;
 
 WU=0;
 

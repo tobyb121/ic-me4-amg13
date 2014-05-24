@@ -7,7 +7,7 @@ function [ As ] = amg_get_strength_matrix(A,theta)
     
     for i=1:length(r)
         if(r(i)~=c(i))
-            if(-v(i)<aik_max(r(i))*theta)
+            if(abs(v(i))<abs(aik_max(r(i))*theta))
                 As(r(i),c(i))=0;
             end
         end

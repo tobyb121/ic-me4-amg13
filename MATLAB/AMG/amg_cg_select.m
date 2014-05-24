@@ -62,14 +62,6 @@ if(two_pass)
     
     for i=1:length(rFF)
         if(rFF(i)~=0)
-            s=0;
-            %             for c=nonzeros(C)'
-            %                 %if(As(F(rFF(i)),c)~=0&&As(F(cFF(i)),c)~=0)
-            %                 if(any(As(F(rFF(i)),c)&As(F(cFF(i)),c)))
-            %                     s=1;
-            %                     break;
-            %                 end
-            %             end
             c=nonzeros(C);
             if(~any(As(F(rFF(i)),c)&As(F(cFF(i)),c)))
                 C(i_c)=F(rFF(i));
