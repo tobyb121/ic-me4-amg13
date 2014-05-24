@@ -29,3 +29,5 @@ Release/*
 *.ai
 *.asv
 Thumbs.db
+*.glb
+*.zip
