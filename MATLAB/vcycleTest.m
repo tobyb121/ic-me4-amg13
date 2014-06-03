@@ -20,14 +20,15 @@ X=peaks(grid_rows);
 u=reshape(X,N,1);
 b=A*u;
 x=zeros(N,1);
-
+e0=x-u;
 xk0=x;
 rk0=norm(A*xk0-b);
 %%
-vcycleDbg('v1',3,'v2',10,'v3',3,'smoother',@GaussSeidel)
-xv=vcycleDbg(A,b,x,grid_rows,grid_cols,4,x,b);
+vcycle('v1',3,'v2',10,'v3',3,'smoother',@GaussSeidel)
+xv=vcycle(A,b,x,grid_rows,grid_cols,5);
+Xv=reshape(xv,grid_rows,grid_cols);
 
-xkn=xv;
-rkn=norm(A*xkn-b);
+ev=xv-u;
 
-plot_vcycle;
+xj=Jacobi(A,b,x,50);
+ej=xj-u;

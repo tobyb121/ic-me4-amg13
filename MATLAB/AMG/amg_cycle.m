@@ -72,13 +72,9 @@ if isempty(Ihc_h)
     return;
 end
 
-Ih_hcs=full(sum(Ihc_h,1));
+max_row_Ih_hc=max(sum(Ihc_h,1));
 
-[i,j,s]=find(Ihc_h);
-s=s./Ih_hcs(j)';
-
-Ih_hc=sparse(j,i,s,lenC,N,length(i));
-
+Ih_hc=1/max_row_Ih_hc*Ihc_h';
 A2h=[];
 if ~isempty(A2h_cache)
     for i=1:length(size_cache)
