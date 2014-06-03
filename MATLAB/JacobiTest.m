@@ -1,6 +1,6 @@
 clear;
-N=8012;
-i=1;
+N=8192;
+i=50;
 B=[1*ones(N,1),-2*ones(N,1),1*ones(N,1)];
 d=[-1,0,1];
 A=spdiags(B,d,N,N);
@@ -12,7 +12,7 @@ Jacobi('w',1);
 xj=Jacobi(A,b,x0,i);
 Jacobi('w',2/3);
 xjw=Jacobi(A,b,x0,i);
-xgs=GaussSeidel(A,b,x0,i);
+xgs=conjgrad(A,b,x0,i);%GaussSeidel(A,b,x0,i);
 figure;
 plot(1:N,x,1:N,xj,1:N,xjw,1:N,xgs);
 figure;
