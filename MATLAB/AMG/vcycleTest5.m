@@ -11,7 +11,7 @@ for i=1:7
     b=-b;
     x=ones(N,1);
        
-    %amg_cycle('reset');
+    amg_cycle('reset');
     
     xv=x;
     WU=0;

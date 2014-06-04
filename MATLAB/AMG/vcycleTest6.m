@@ -1,15 +1,17 @@
 clear all;
 close all;
 
-amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
+G={'uniform','graded'};
 
-G={'graded','uniform'};
+k=250;
 
-k=500;
+zero=zeros(k,length(G));
+ravj=zero;
+rvj=zero;
+rj=zero;
+rgs=zero;
+rcg=zero;
 
-rv=zeros(k,length(G));
-rj=zeros(k,length(G));
-rcg=zeros(k,length(G));
 for i=1:length(G)
     
     load(['ADE_80_',G{i}]);
@@ -19,15 +21,29 @@ for i=1:length(G)
        
     amg_cycle('reset');
     
-    xv=x;
+    % AMG Jacobi
+    amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
+    xavj=x;
     WU=0;
+    disp('AMG Jacobi');
     fprintf('Iterating:  setup');
     for j=1:k
-        [xv,WUv]=amg_cycle(A,b,xv,1,10);
+        [xavj,WUv]=amg_cycle(A,b,xavj,1,10);
         WU=WUv+WU;
-        rv(j,i)=norm(b-A*xv);
+        ravj(j,i)=norm(b-A*xavj);
         fprintf('\b\b\b\b\b\b% 5d\n',j);
     end
+
+    vcycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
+    xvj=x;
+    disp('Geometric V Jacobi');
+    fprintf('Iterating:  setup');
+    for j=1:k
+        [xvj]=vcycle(A,b,xvj,80,80,6);
+        rvj(j,i)=norm(b-A*xvj);
+        fprintf('\b\b\b\b\b\b% 5d\n',j);
+    end
+    
     fprintf('Iterating: Jacobi %d\n',WU);
     [xj,rjn]=Jacobi(A,b,x,k*ceil(WU/k));
     rjn=rjn(1:length(rjn)/k:length(rjn));
@@ -37,13 +53,17 @@ for i=1:length(G)
     rcgn=rcgn(1:length(rcgn)/k:length(rcgn));
     rcg(:,i)=rcgn;
 end
-
-figure(1);
-semilogy(rv);
-figure(2);
-semilogy(rj);
-figure(3);
-semilogy(rcg);
+r0=norm(b-A*x);
+figure;
+semilogy([ravj(:,1),rvj(:,1),rj(:,1),rcg(:,1)]/r0);
+legend({'Algebraic Multigrid','Geometric Multgrid','Jacobi','Conjugate Gradient'});
+figure;
+semilogy([ravj(:,2),rvj(:,2),rj(:,2),rcg(:,2)]/r0);
+legend({'Algebraic Multigrid','Geometric Multgrid','Jacobi','Conjugate Gradient'});
+% figure(2);
+% semilogy(rj);
+% figure(3);
+% semilogy(rcg);
 % %%
 % lrv=log10(rv);
 % P=zeros(1,length(G));

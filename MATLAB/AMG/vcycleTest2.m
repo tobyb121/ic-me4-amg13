@@ -67,9 +67,9 @@ for i=ceil(1:rows/2)
 end
 for i=ceil(rows/2+1:rows)
  for j=ceil(rows/2+1:rows)
-     a(n(i,j))=-1;
-     b(n(i,j))=-1;
-     c(n(i,j))=0;
+     a(n(i,j))=0;
+     b(n(i,j))=0;
+     c(n(i,j))=-2;
  end
 end
 

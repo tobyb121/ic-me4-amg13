@@ -12,23 +12,28 @@ close all;
 
 disp('Setup');
 
-k=75;
+k=200;
 
-rows=64;
+rows=5;
 N=rows^2;
 
-grid_rows=rows;
-grid_cols=rows;
+grid_rows=5;
+grid_cols=5;
 
 N=grid_rows*grid_cols;
 
-B=ones(N,1)*[1,1,-4,1,1];
-B(grid_cols+1:grid_cols:N,4)=0;
-B(grid_cols:grid_cols:N,2)=0;
-d=[-grid_cols,-1,0,1,grid_cols];
+B=ones(N,1)*[1,1,1,1,-8,1,1,1,1];
+B(1:grid_cols:N,3)=0;%SW
+B(grid_cols+1:grid_cols:N,6)=0;%S
+B(grid_cols+1:grid_cols:N,9)=0;%SE
+B(grid_cols:grid_cols:N,7)=0;%NE
+B(grid_cols:grid_cols:N,4)=0;%N
+B(grid_cols:grid_cols:N,1)=0;%NW
+d=[-grid_cols-1,-grid_cols,-grid_cols+1,-1,0,1,grid_cols-1,grid_cols,grid_cols+1];
 
 A=spdiags(B,d,N,N);
 
+%%
 clear('B','d');
 X=peaks(grid_rows);
 u=reshape(X,N,1);
@@ -44,8 +49,6 @@ rk0=norm(A*xk0-b);
 amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
 xv=xk0;
 rv=[rk0];
-xvg=xk0;
-rvg=[rk0];
 WU=0;
 disp('Starting AMG cycle');
 fprintf('Iterating:  setup');
@@ -53,11 +56,15 @@ for i=1:k
     [xv,WUv]=amg_cycle(A,b,xv,1,7);
     WU=WUv+WU;
     rv=[rv,norm(A*xv-b)];
-    xvg=vcycle(A,b,xvg,rows,rows,7);
-    rvg=[rvg,norm(A*xvg-b)];
     fprintf('\b\b\b\b\b\b% 5d\n',i);
 end
 
-semilogy(1:length(rv),rv,1:length(rvg),rvg);
-legend({'AMG Cycle','Geometric V-Cycle'});
+[xj,rj]=Jacobi(A,b,x,round(WU));
+
+xkn=xv;
+rkn=norm(A*xkn-b);
+rjn=norm(A*xj-b);
+
+semilogy(linspace(0,length(rj),length(rj)),rj,linspace(0,length(rj),length(rv)),rv);
+legend({'Jacobi','AMG cycle'});
 

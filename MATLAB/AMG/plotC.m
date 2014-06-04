@@ -1,3 +1,4 @@
+global C_cache;
 C0=1:N;
 C1=C_cache{1};
 C2=C_cache{2};

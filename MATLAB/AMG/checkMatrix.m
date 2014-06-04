@@ -1,4 +1,4 @@
-createMGTest;
+%createMGTest;
 
 A=full(A);
 
