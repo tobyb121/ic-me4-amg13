@@ -16,7 +16,7 @@ function [xk,rcg] = conjgrad(A,b,x,k)
         xk=xk+alpha*p;
         r_new=r-alpha*Ap;
         rcg(i)=norm(r_new);
-        beta=(r_new'*r_new)/(r_old'*r_old);
+        beta=(r_new'*r_new)/(r'*r);
         p=r_new+beta*p;
         r=r_new;
     end

@@ -6,6 +6,7 @@ amg_cycle('v1',3,'v2',10,'v3',3,'smoother',@Jacobi);
 G=[20,40,50,60,70,80];
 
 k=500;
+T=[];
 
 rv=zeros(k,length(G));
 rj=zeros(k,length(G));
@@ -23,7 +24,13 @@ for i=1:length(G)
     WU=0;
     fprintf('Iterating:  setup');
     for j=1:k
+        if(j==1)
+           tic; 
+        end
         [xv,WUv]=amg_cycle(A,b,xv,1,ceil(log2(G(i))));
+        if(j==1)
+           T(i)=toc; 
+        end
         WU=WUv+WU;
         rv(j,i)=norm(b-A*xv);
         fprintf('\b\b\b\b\b\b% 5d\n',j);
