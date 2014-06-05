@@ -16,8 +16,12 @@ function [xk,rcg] = conjgrad(A,b,x,k)
         xk=xk+alpha*p;
         r_new=r-alpha*Ap;
         rcg(i)=norm(r_new);
-        beta=(r_new'*r_new)/(r_old'*r_old);
+        beta=(r_new'*r_new)/(r'*r);
         p=r_new+beta*p;
         r=r_new;
+        %return if sufficiently converged
+        if(norm(r)<10^-20)
+            rcg(k:end)=norm(r);
+            return;
+        end
     end
-    rcg(isnan(rcg))=rcg(find(~isnan(rcg),1,'last'));
